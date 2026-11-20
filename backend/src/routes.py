@@ -20,6 +20,8 @@ def workspace(db=Depends(session),user=Depends(current)):
 def create(data:IntakeInput,db=Depends(session),user=Depends(editor)):return intake.create(db,data,user)
 @router.patch('/intakes/{id}/facts')
 def facts(id:int,data:FactsInput,db=Depends(session),user=Depends(editor)):return intake.revise(db,id,data,user)
+@router.patch('/intakes/{id}/materials-summary')
+def materials_summary(id:int,data:MaterialsSummaryInput,db=Depends(session),user=Depends(editor)):return intake.revise_materials(db,id,data,user)
 @router.post('/intakes/{id}/consent')
 def consent(id:int,data:ConsentInput,db=Depends(session),user=Depends(editor)):return intake.consent(db,id,data,user)
 @router.post('/parties')

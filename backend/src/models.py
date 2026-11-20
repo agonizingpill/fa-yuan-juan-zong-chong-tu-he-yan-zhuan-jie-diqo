@@ -17,6 +17,8 @@ class Intake(Base):
     alias:Mapped[str]=mapped_column(String(60))
     facts:Mapped[str]=mapped_column(Text)
     facts_version:Mapped[int]=mapped_column(Integer,default=1)
+    materials_summary:Mapped[str]=mapped_column(Text,default='')
+    materials_version:Mapped[int]=mapped_column(Integer,default=0)
     status:Mapped[str]=mapped_column(String(20),default=IntakeState.open.value)
 class Consent(Base):
     __tablename__='consents'
@@ -47,12 +49,19 @@ class ConflictCheck(Base):
     at:Mapped[datetime]=mapped_column(DateTime(timezone=True),default=now)
 class Triage(Base):
     __tablename__='triages'
+    __table_args__=(UniqueConstraint('intake_id','facts_version','materials_version'),)
     id:Mapped[int]=mapped_column(primary_key=True)
     intake_id:Mapped[int]=mapped_column(ForeignKey('intakes.id'))
     facts_version:Mapped[int]=mapped_column(Integer)
+    materials_version:Mapped[int]=mapped_column(Integer,default=0)
     status:Mapped[str]=mapped_column(String(20),default='queued')
     predicted:Mapped[str|None]=mapped_column(String(20),nullable=True)
     confidence:Mapped[float|None]=mapped_column(Float,nullable=True)
+    materials_predicted:Mapped[str|None]=mapped_column(String(20),nullable=True)
+    materials_confidence:Mapped[float|None]=mapped_column(Float,nullable=True)
+    source_conflict:Mapped[bool]=mapped_column(Boolean,default=False)
+    adopted_source:Mapped[str|None]=mapped_column(String(20),nullable=True)
+    adopt_reason:Mapped[str]=mapped_column(String(200),default='')
     approved:Mapped[str|None]=mapped_column(String(20),nullable=True)
     manual_required:Mapped[bool]=mapped_column(Boolean,default=True)
     review_note:Mapped[str]=mapped_column(String(200),default='')

@@ -6,8 +6,11 @@ class IntakeInput(BaseModel):
     code:str=Field(min_length=3,max_length=40)
     alias:str=Field(min_length=2,max_length=60)
     facts:str=Field(min_length=8,max_length=3000)
+    materials_summary:str=Field(default='',max_length=2000)
 class FactsInput(BaseModel):
     facts:str=Field(min_length=8,max_length=3000)
+class MaterialsSummaryInput(BaseModel):
+    materials_summary:str=Field(default='',max_length=2000)
 class ConsentInput(BaseModel):
     authorized:bool
     basis:str=Field(min_length=3,max_length=200)
@@ -23,6 +26,8 @@ class TriageInput(BaseModel):
 class ReviewInput(BaseModel):
     topic:str=Field(pattern='^(labor|housing|consumer)$')
     note:str=Field(min_length=3,max_length=200)
+    adopted_source:str|None=Field(default=None,pattern='^(facts|materials|both|manual)$')
+    adopt_reason:str=Field(default='',max_length=200)
 class DocumentInput(BaseModel):
     intake_id:int
     requirement_id:int
